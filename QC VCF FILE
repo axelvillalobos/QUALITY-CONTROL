@@ -1,0 +1,23 @@
+#ESTABLECER ARCHIVO DE TRABAJO (ejemplo)
+setwd("D:/PLINK/SNPPLINK")
+
+#Se inicia recodificando de VCF a formato PLINK
+
+system("plink.exe --vcf archivo.vcf --cow --autosome --recode --nonfounders --allow-no-sex --out criollo")
+
+list.files("./")
+
+# SE RECODIFICA A FORMARTO BED
+system("plink.exe --file criollo --cow --make-bed --nonfounders --allow-no-sex --out criollo_bed")
+
+# OPCIONES DE CONTROL DE CALIDAD QC
+# Quality control criteria
+## Missigness per SNP: --geno
+## Missigness per individual: 0.1 --mind
+## Minor allele frequency: 0.05 --maf
+## Hardy-Weinber threshold: 0.0000001 --hwe
+
+system("plink.exe --bfile criollo_bed --cow --geno 0.1 --mind 0.1 --maf 0.05 --make-bed --out criolloQC_out")
+
+# SE CREA ARCHIVO VCF NUEVAMENTE
+system("plink.exe --bfile criolloQC_out --cow --recode vcf-iid --out criolloQC_out_vcf")
